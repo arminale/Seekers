@@ -60,6 +60,7 @@
         ISBN Barcode: <br><br>
        <input type="text" name="ISBN" value="{{metadata.ISBN}}" size="30"/> <br><br><br>
        <input type="submit" name="lookup" value="ISBN Lookup" ><br>
+       {% if isbnFound == False%}ISBN not found.<br>{% endif %}
        <input type="submit" name="add_button" value="Submit" >
     </form>
     

@@ -13,37 +13,46 @@ SERVICE = 'openl'
 
 # Create your views here.
 def index(request):
+
+    returns = {}
+    
     categories = list(set(Book.objects.all().values_list('category', flat=True)))
-    print categories
+    returns['categories'] = categories
+    
     if request.method == "POST":
         if request.POST.get('add_button') != None:
             book = Book()
-            book.book_name = request.POST.get('book_name')
-            book.author = request.POST.get('author')
-            book.quantity = request.POST.get('quantity')
+            book.book_name = request.POST.get('Title')
+            book.author = request.POST.get('Author')
+            book.quantity = request.POST.get('Quantity')
+            book.category = request.POST.get('Category')
             book.date_added = timezone.now()
             book.save()
             
+            
         elif request.POST.get('lookup') != None:
             isbn = request.POST.get('ISBN')
+            print isbn
+            print meta(isbn)
             if is_isbn10(isbn) or is_isbn13(isbn):
             
                 try:
                     metadata = meta(isbn)
-                    
+                    clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
+                    returns['isbnFound'] = True
+                    returns['metadata'] =  clean_metadata
+                    print "hi"
                 except:
-                    print metadata
+                    
                     clean_metadata = { 'ISBN' : isbn }
-                    return render(request, 'inventory/index.html', {'isbnFound' : False, 'metadata': clean_metadata})
-                    
-                    
-                clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
-                return render(request, 'inventory/index.html', {'isbnFound' : True, 'metadata': clean_metadata})
+                    returns['isbnFound'] = False
+                    returns['metadata'] =  clean_metadata
             else:
                 
                 clean_metadata = { 'ISBN' : isbn }
-                return render(request, 'inventory/index.html', {'isbnFound' : False, 'metadata': clean_metadata})
-    return render(request, 'inventory/index.html', {'categories': categories})
+                returns['isbnFound'] = False
+                returns['metadata'] =  clean_metadata
+    return render(request, 'inventory/index.html', returns)
     
 def detail(request, book_id):
     book = get_object_or_404(Book, pk = book_id)
