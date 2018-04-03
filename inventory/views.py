@@ -18,6 +18,16 @@ def index(request):
     
     categories = list(set(Book.objects.all().values_list('category', flat=True)))
     returns['categories'] = categories
+    searchTerm = request.POST.get('search_term')
+    returns['search_term'] = searchTerm
+    
+    if searchTerm != None:
+        results = Book.objects.filter(book_name__startswith=searchTerm)
+        print results
+        found_results = len(results) != 0
+        returns['found_results'] = found_results
+        if found_results:
+            returns['results'] = results
     
     if request.method == "POST":
         if request.POST.get('add_button') != None:

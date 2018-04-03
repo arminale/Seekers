@@ -39,7 +39,11 @@
    <a href="#contact">Contact</a>  -->
 
         <img src="http://www.stickpng.com/assets/images/585e4ae9cb11b227491c3394.png" alt="Smiley face" width="20" height="20" >
-        <input type="text" size="50" placeholder="Search for books... ">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="text" name="search_term" size="50" placeholder="Search for books... " value ="{% if search_term %}{{search_term}}{% endif %}"><br>
+            <input type="submit" name="search" value="search">
+        </form>
     </div>
     
    <form action="" method= "POST" >
@@ -64,6 +68,14 @@
        <input type="submit" name="add_button" value="Submit" >
     </form>
     
+    {% if found_results %}
+    <br>
+    <ul>
+        {% for book in results %}
+            <li>{{book.book_name}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 </body>
 
