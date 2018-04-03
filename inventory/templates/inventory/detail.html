@@ -1,0 +1,12 @@
+{{ book.book_name }}
+
+<form method="POST" action="">
+{% csrf_token %}
+  Book Name: <input type="text" name = "book_name" value="{{book.book_name}}"><br>
+  Author: <input type="text" name = "author" value="{{book.author}}"><br>
+  Quantity: <input type="number" name = "quantity" value="{{book.quantity}}"><br>
+  ISBN: <input type="number" name = "isbn" value="{{book.isbn}}"><br>
+  Category: <input type="text" name = "category" value="{{book.category}}"><br>
+  {{book.date_added}}  <br>
+  <input type="submit" value="Change"/>
+</form>

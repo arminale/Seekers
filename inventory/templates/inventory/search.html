@@ -1,0 +1,17 @@
+<form method="POST" action="">
+{% csrf_token %}
+<input type = "text" name = "search_box" value= "{{search_term}}">
+<input type="submit" name= "search_button" value="Search"/>
+<input type="submit" name = "add_button" value="Add New Book"/>
+<br>
+</form>
+{% if found_results == True %}
+    <ul>
+    {% for book in results %}
+        <li><a href="{% url 'inventory:detail' book.id%}"> {{ book.book_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+{% if found_results == False %}
+    <p>No results found.</p>
+{% endif %}

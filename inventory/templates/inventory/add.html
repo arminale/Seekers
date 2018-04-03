@@ -1,0 +1,15 @@
+<form method="POST" action="">
+{% csrf_token %}
+
+  Book Name: <input type="text" name = "book_name" value="{% if metadata %}{{metadata.Title}}{% else %}{{search_term}}{% endif %}"><br>
+  Author: <input type="text" name = "author" value="{{metadata.Author}}"><br>
+  Quantity: <input type="number" name = "quantity" value="1"><br>
+  ISBN: <input type="number" name = "isbn" value="{{metadata.ISBN}}">
+  <input type="submit" name="look_up" value="Autofill"/>
+  {% if isbnFound == False%}
+  ISBN not found
+  {% endif %}<br>
+  Category <input type="text" name = "category" value=""><br>
+  <input type="submit" name="add_another" value="Submit and Add Another"/>
+  <input type="submit" name="add_back" value="Submit and Go Back to Search"/>
+</form>
