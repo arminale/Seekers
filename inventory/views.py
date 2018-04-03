@@ -7,12 +7,43 @@ from django.urls import reverse
 from .models import Book
 from django.utils import timezone
 from isbnlib import meta, is_isbn10, is_isbn13
+import isbnlib
 
 SERVICE = 'openl'
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello World!")
+    categories = list(set(Book.objects.all().values_list('category', flat=True)))
+    print categories
+    if request.method == "POST":
+        if request.POST.get('add_button') != None:
+            book = Book()
+            book.book_name = request.POST.get('book_name')
+            book.author = request.POST.get('author')
+            book.quantity = request.POST.get('quantity')
+            book.date_added = timezone.now()
+            book.save()
+            
+        elif request.POST.get('lookup') != None:
+            isbn = request.POST.get('ISBN')
+            if is_isbn10(isbn) or is_isbn13(isbn):
+            
+                try:
+                    metadata = meta(isbn)
+                    
+                except:
+                    print metadata
+                    clean_metadata = { 'ISBN' : isbn }
+                    return render(request, 'inventory/index.html', {'isbnFound' : False, 'metadata': clean_metadata})
+                    
+                    
+                clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
+                return render(request, 'inventory/index.html', {'isbnFound' : True, 'metadata': clean_metadata})
+            else:
+                
+                clean_metadata = { 'ISBN' : isbn }
+                return render(request, 'inventory/index.html', {'isbnFound' : False, 'metadata': clean_metadata})
+    return render(request, 'inventory/index.html', {'categories': categories})
     
 def detail(request, book_id):
     book = get_object_or_404(Book, pk = book_id)
