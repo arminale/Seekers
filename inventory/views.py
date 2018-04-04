@@ -26,7 +26,7 @@ def index(request):
         print request.POST
         searchTerm = request.POST.get('search_term')
         returns['search_term'] = searchTerm
-        if searchTerm != "":
+        if searchTerm != "" and searchTerm!= None:
                 
                 results = Book.objects.filter(book_name__startswith=searchTerm)
         
