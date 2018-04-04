@@ -47,7 +47,9 @@
                 <br>
                 <ul>
                 {% for book in results %}
-                    <input type="submit" name="{{book.pk}}" value = "{{book.book_name}}"><br>
+                    <input type="submit" name="{{book.pk}}" value = "{{book.book_name}}">
+                    <input type="submit" name="{{book.pk}}" value= "+">
+                    <input type="submit" name = "{{book.pk}}" value="-"<br>
                 {% endfor %}
                 </ul>
     
@@ -62,9 +64,9 @@
        Author Name:<br><br>
        <input type="text" name="Author" value="{{metadata.Author}}"/> <br><br>
        Current Quantity:<br><br>   <!-- need to fetch value from database -->
-       <input type="number" name="Quantity" value="0" size="30" /> <br><br>
+       <input type="number" name="Quantity" value="{{metadata.Quantity}}" size="30" /> <br><br>
        Category: <br><br>
-       <input type="text" name="Category" list="category" size="30"/>
+       <input type="text" name="Category" list="category" value = "{{metadata.Category}}"size="30"/>
        <datalist id="category">
             {% for category in categories %}
                 <option>{% if category %}{{category}}{%endif%}</option>
