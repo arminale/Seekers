@@ -45,6 +45,7 @@ hr{
     left: 0;
     width: 100%;
     position: fixed;
+    clear: both;
     background-color: white;
 }
 
@@ -67,7 +68,7 @@ hr{
     background-color: #86B1E8;
 }
 
-form {
+.inputinfo form {
     font-family: "Open Sans";
     font-size: 18px;
     font-style: normal;
@@ -75,12 +76,13 @@ form {
     font-weight: 500;
     line-height: 20px;
     float: right;
-    padding-top: 150px;
-    padding-right: 100px;
-    padding-bottom: 300px;
+    margin-top:-160px;
+    padding-top: 65px;
+    padding-right: 10px;
+    padding-bottom: 400px;
 }
 
-input[type=text] {
+.inputinfo input[type=text] {
     font-family: "Open Sans";
     font-size: 14px;
     font-style: normal;
@@ -88,9 +90,10 @@ input[type=text] {
     font-weight: 500;
     line-height: 20px;
     width: 220px;
-    
+
 }
-input[type=number] {
+
+.inputinfo input[type=number] {
     font-family: "Open Sans";
     font-size: 14px;
     font-style: normal;
@@ -98,10 +101,10 @@ input[type=number] {
     font-weight: 500;
     line-height: 20px;
     width: 220px;
-    
+
 }
 
-input[type=submit] {
+.inputinfo input[type=submit] {
     font-family: "Open Sans";
     font-size: 18px;
     background-color: #FFFFFF;
@@ -111,10 +114,10 @@ input[type=submit] {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    
+
 }
 
-input[type=submit]:hover {
+.inputinfo input[type=submit]:hover {
     background-color: #86B1E8;
     cursor: pointer;
 
@@ -130,29 +133,11 @@ select option {
     height: 20px;
 }
 
-.topnav {
-    overflow: hidden;
-    float:left;
-    padding-top:200px;
-    border-radius: 5px;
-    background-color: white;
-    
-}
-/* Style the links inside the navigation bar
-.topnav a {
-    float: right;
-    display: block;
-    color: black;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 16px;
-    font-family: "Open Sans";
-} */
 
 .topnav img{
-    float:left;
-    margin-top:20px;
+    padding-top:0px;
+    margin-top:60px;
+    /*margin-left:-695px;*/
 }
 
 /* Change the color of links on hover */
@@ -170,35 +155,73 @@ select option {
 /* Style the search box inside the navigation bar */
 .topnav input[type=text] {
     float: left;
-    padding: 10px;
+    height:40px;
+    text-indent:40px;
     border-color: #CCD3D5 ;
     border-width: 1.1px;
     border-style: solid;
     border-radius: 18px;
-    margin-top: 9px;
+    margin-top: 50px;
+    /*margin-left:150px;*/
     margin-bottom: 9px;
     font-size: 14px;
     font-family: "Open Sans";
-    width: 400px;
+    width: 700px;
+}
+/*
+.topnav input[type=submit] {
+    float: left;
+    height:1px;
+    border-color: #000000 ;
+    border-width: 0.1px;
+    border-style: none;
+    border-radius: 18px;
+    margin-top: 0px;
+    margin-left:0px;
+    margin-bottom: 0px;
+    font-size: 4px;
+    font-family: "Open Sans";
+    width: 1px;
+    overflow: hidden;
+    background-color: black;
+    color:white;
+} */
+.topnav input[type=submit] {
+    font-family: "Open Sans";
+    font-size: 18px;
+    background-color: #FFFFFF;
+    border: 1px solid #DCDCDC;
+    color: black;
+    padding: 10px 83px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }
 
-fsearch{
+.fsearch{
+    padding:10px;
     float:left;
-    padding-left: 50px;
-    padding-top:100px;
-    margin-top:50px;
-}
-fsearch button[type=button]{
-    float:left;
-    background-color: white;
-    color:black;
-    border-color: white;
-    border-right-color:#dcdcdc;
-    font-size:18px;
-    font-family:"Open Sans";
+    margin-top:100px;
+    top:50px;
+    margin-left:50px;
+    background-color:white;
 }
 
-
-fsearch button[type=button]:hover{
-    background-color:#86B1E8;
+/* Customize the label (the container) */
+.fsearch.container {
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family:"Open Sans";
 }
+
+/* Hide the browser's default radio button */
+.container input[type="radio"] {
+  height:22px;
+  width:25px;
+  background-color:#eee;
+}
+
+/*.container{
+  display:inline;
+}*/

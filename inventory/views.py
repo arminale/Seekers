@@ -15,26 +15,27 @@ SERVICE = 'openl'
 def index(request):
 
     returns = {}
-    
+
     categories = list(set(Book.objects.all().values_list('category', flat=True)))
     returns['categories'] = categories
-    
-    
-    
-    
+
+
+
+
     if request.method == "POST":
         print request.POST
         searchTerm = request.POST.get('search_term')
         returns['search_term'] = searchTerm
-        if searchTerm != "" and searchTerm!= None:
-                
+        if searchTerm != "" and searchTerm != None:
+
                 results = Book.objects.filter(book_name__startswith=searchTerm)
-        
+
                 found_results = len(results) != 0
                 returns['found_results'] = found_results
+                print results
                 if found_results:
                     returns['results'] = results
-                    
+
         if request.POST.get('add_button') != None:
             try:
                 book = Book.objects.get(book_name=request.POST.get('Title'))
@@ -46,39 +47,39 @@ def index(request):
             book.quantity = request.POST.get('Quantity')
             book.category = request.POST.get('Category')
             book.isbn = request.POST.get('ISBN')
-            
+
             book.save()
-            
-            
+
+
         elif request.POST.get('lookup') != None:
             isbn = request.POST.get('ISBN')
-            
+
             if is_isbn10(isbn) or is_isbn13(isbn):
-            
+
                 try:
                     metadata = meta(isbn)
                     clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
                     returns['isbnFound'] = True
                     returns['metadata'] =  clean_metadata
-                    
+
                 except:
-                    
+
                     clean_metadata = { 'ISBN' : isbn }
                     returns['isbnFound'] = False
                     returns['metadata'] =  clean_metadata
             else:
-                
+
                 clean_metadata = { 'ISBN' : isbn }
                 returns['isbnFound'] = False
                 returns['metadata'] =  clean_metadata
         elif request.POST.get('search') != None:
             searchTerm = request.POST.get('search_term')
-            
+
             returns['search_term'] = searchTerm
             if searchTerm != "":
-                
+
                 results = Book.objects.filter(book_name__startswith=searchTerm)
-        
+
                 found_results = len(results) != 0
                 returns['found_results'] = found_results
                 if found_results:
@@ -103,12 +104,12 @@ def index(request):
                 returns['search_term'] = ""
             else:
                 book = Book.objects.get(pk=bookKey)
-            
+
                 metadata = {'Title' : book.book_name, 'Author' : book.author, 'Quantity' : book.quantity, 'ISBN': book.isbn, 'Category': book.category}
                 returns['metadata'] = metadata
-            
+
     return render(request, 'inventory/index.html', returns)
-    
+
 def detail(request, book_id):
     book = get_object_or_404(Book, pk = book_id)
     if request.method == "POST":
@@ -139,7 +140,7 @@ def search(request,searchTerm = ""):
             return HttpResponseRedirect(reverse('inventory:add', args=(searchTerm,)))
     else:
         return render(request,'inventory/search.html', {'search_term' : searchTerm})
-    
+
 
 def add(request, searchTerm= ""):
     searchTerm = searchTerm.replace("_", " ")
@@ -163,7 +164,6 @@ def add(request, searchTerm= ""):
             else:
                 clean_metadata = { 'ISBN' : isbn }
                 return render(request, 'inventory/add.html', {'isbnFound' : False, 'metadata': clean_metadata})
-            
+
     else:
         return render(request,'inventory/add.html', {'search_term' : searchTerm})
-    
