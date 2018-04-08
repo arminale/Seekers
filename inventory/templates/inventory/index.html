@@ -111,7 +111,7 @@
                 <br><br>
                 <h3>Book not found in database.</h3>
                 <br>
-                <input type="submit" id="addnew" value="Add New">
+                <input type="submit" id="addnew" name="addnew" value="Add New">
               {% endif %}
         </form>
       </div>
@@ -126,7 +126,7 @@
             Author Name:<br><br>
             <input type="text" name="Author" value="{{metadata.Author}}"/> <br><br>
             Current Quantity:<br><br>   <!-- need to fetch value from database -->
-            <input type="number" name="Quantity" value="{{metadata.Quantity}}" size="30" /> <br><br>
+            <input type="number" name="Quantity" value="{% if metadata.Quantity %}{{metadata.Quantity}}{% else %}0{% endif %}" size="30" /> <br><br>
             Category: <br><br>
             <input type="text" name="Category" list="category" value = "{{metadata.Category}}"size="30"/>
             <datalist id="category">

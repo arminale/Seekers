@@ -37,18 +37,22 @@ def index(request):
                     returns['results'] = results
 
         if request.POST.get('add_button') != None:
-            try:
-                book = Book.objects.get(book_name=request.POST.get('Title'))
-            except:
-                book = Book()
-                book.date_added = timezone.now()
-            book.book_name = request.POST.get('Title')
-            book.author = request.POST.get('Author')
-            book.quantity = request.POST.get('Quantity')
-            book.category = request.POST.get('Category')
-            
+            if request.POST.get('Title') == "" or request.POST.get('Title') == None or request.POST.get('Author') == "" or request.POST.get('Author') == None or request.POST.get('Quantity') == 0 or request.POST.get('Quantity') == None or request.POST.get('Category') == "" or request.POST.get('Category') == None:
+                metadata = { 'Title': request.POST.get('Title'), 'Author' : request.POST.get('Author'), 'Category' :request.POST.get('Category'), 'Quantity' : request.POST.get('Quantity') }
+                returns['metadata'] = metadata
+            else:
+                try:
+                    book = Book.objects.get(book_name=request.POST.get('Title'))
+                except:
+                    book = Book()
+                    book.date_added = timezone.now()
+                book.book_name = request.POST.get('Title')
+                book.author = request.POST.get('Author')
+                book.quantity = request.POST.get('Quantity')
+                book.category = request.POST.get('Category')
+                
 
-            book.save()
+                book.save()
 
 
         elif request.POST.get('lookup') != None:
@@ -84,6 +88,10 @@ def index(request):
                 returns['found_results'] = found_results
                 if found_results:
                     returns['results'] = results
+        elif request.POST.get('addnew') != None:
+            metadata = {'Title' : searchTerm}
+            returns['metadata'] = metadata
+        
         else:
             for key in request.POST.keys():
                 if key.isnumeric():
@@ -105,65 +113,65 @@ def index(request):
             else:
                 book = Book.objects.get(pk=bookKey)
 
-                metadata = {'Title' : book.book_name, 'Author' : book.author, 'Quantity' : book.quantity, 'ISBN': book.isbn, 'Category': book.category}
+                metadata = {'Title' : book.book_name, 'Author' : book.author, 'Quantity' : book.quantity, 'Category': book.category}
                 returns['metadata'] = metadata
 
     return render(request, 'inventory/index.html', returns)
 
-def detail(request, book_id):
-    book = get_object_or_404(Book, pk = book_id)
-    if request.method == "POST":
-        book.book_name = request.POST.get('book_name')
-        book.author = request.POST.get('author')
-        book.quantity = request.POST.get('quantity')
-        if request.POST.get('isbn') != None:
-            book.isbn = request.POST.get('isbn')
-        else:
-            book.isbn = 0
-        book.category = request.POST.get('category')
-        book.save()
-    return render(request, 'inventory/detail.html', {'book':book})
+# def detail(request, book_id):
+    # book = get_object_or_404(Book, pk = book_id)
+    # if request.method == "POST":
+        # book.book_name = request.POST.get('book_name')
+        # book.author = request.POST.get('author')
+        # book.quantity = request.POST.get('quantity')
+        # if request.POST.get('isbn') != None:
+            # book.isbn = request.POST.get('isbn')
+        # else:
+            # book.isbn = 0
+        # book.category = request.POST.get('category')
+        # book.save()
+    # return render(request, 'inventory/detail.html', {'book':book})
 
-def search(request,searchTerm = ""):
-    results = None
-    found_results = None
-    if request.method=="POST":
-        searchTerm = request.POST.get('search_box')
+# def search(request,searchTerm = ""):
+    # results = None
+    # found_results = None
+    # if request.method=="POST":
+        # searchTerm = request.POST.get('search_box')
 
-        if request.POST.get('search_button') != None:
-            if searchTerm != "":
-                results = Book.objects.filter(book_name__startswith=searchTerm)
-                found_results = len(results) != 0
-            return render(request,'inventory/search.html', {'search_term' : searchTerm, 'results' :results, 'found_results': found_results})
-        elif request.POST.get('add_button') != None:
-            searchTerm = searchTerm.replace(" ", "_")
-            return HttpResponseRedirect(reverse('inventory:add', args=(searchTerm,)))
-    else:
-        return render(request,'inventory/search.html', {'search_term' : searchTerm})
+        # if request.POST.get('search_button') != None:
+            # if searchTerm != "":
+                # results = Book.objects.filter(book_name__startswith=searchTerm)
+                # found_results = len(results) != 0
+            # return render(request,'inventory/search.html', {'search_term' : searchTerm, 'results' :results, 'found_results': found_results})
+        # elif request.POST.get('add_button') != None:
+            # searchTerm = searchTerm.replace(" ", "_")
+            # return HttpResponseRedirect(reverse('inventory:add', args=(searchTerm,)))
+    # else:
+        # return render(request,'inventory/search.html', {'search_term' : searchTerm})
 
 
-def add(request, searchTerm= ""):
-    searchTerm = searchTerm.replace("_", " ")
-    if request.method=="POST":
-        book = Book()
-        book.book_name = request.POST.get('book_name')
-        book.author = request.POST.get('author')
-        book.quantity = request.POST.get('quantity')
-        book.date_added = timezone.now()
-        book.save()
-        if request.POST.get('add_another') != None:
-            return render(request,'inventory/add.html')
-        elif request.POST.get('add_back') != None:
-            return HttpResponseRedirect(reverse('inventory:search'))
-        elif request.POST.get('look_up') != None:
-            isbn = request.POST.get('isbn')
-            if is_isbn10(isbn) or is_isbn13(isbn):
-                metadata = meta(request.POST.get('isbn'), SERVICE)
-                clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
-                return render(request, 'inventory/add.html', {'isbnFound' : True, 'metadata': clean_metadata})
-            else:
-                clean_metadata = { 'ISBN' : isbn }
-                return render(request, 'inventory/add.html', {'isbnFound' : False, 'metadata': clean_metadata})
+# def add(request, searchTerm= ""):
+    # searchTerm = searchTerm.replace("_", " ")
+    # if request.method=="POST":
+        # book = Book()
+        # book.book_name = request.POST.get('book_name')
+        # book.author = request.POST.get('author')
+        # book.quantity = request.POST.get('quantity')
+        # book.date_added = timezone.now()
+        # book.save()
+        # if request.POST.get('add_another') != None:
+            # return render(request,'inventory/add.html')
+        # elif request.POST.get('add_back') != None:
+            # return HttpResponseRedirect(reverse('inventory:search'))
+        # elif request.POST.get('look_up') != None:
+            # isbn = request.POST.get('isbn')
+            # if is_isbn10(isbn) or is_isbn13(isbn):
+                # metadata = meta(request.POST.get('isbn'), SERVICE)
+                # clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
+                # return render(request, 'inventory/add.html', {'isbnFound' : True, 'metadata': clean_metadata})
+            # else:
+                # clean_metadata = { 'ISBN' : isbn }
+                # return render(request, 'inventory/add.html', {'isbnFound' : False, 'metadata': clean_metadata})
 
-    else:
-        return render(request,'inventory/add.html', {'search_term' : searchTerm})
+    # else:
+        # return render(request,'inventory/add.html', {'search_term' : searchTerm})
