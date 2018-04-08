@@ -46,7 +46,7 @@ def index(request):
             book.author = request.POST.get('Author')
             book.quantity = request.POST.get('Quantity')
             book.category = request.POST.get('Category')
-            book.isbn = request.POST.get('ISBN')
+            
 
             book.save()
 
