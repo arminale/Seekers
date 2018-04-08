@@ -149,6 +149,9 @@
             <input type="submit" name="lookup" value="ISBN Lookup" size="30"/><br>
             {% if isbnFound == False%}<br>ISBN not found.<br><br>{% endif %} -->
            <input type="submit" name="add_button" value="Submit" size="30"/>
+           {% if valid_input == False %}
+                <h3 style="color:red; font-weight:bold">Please fill out all forms with valid values.</h3>
+           {% endif %}
          </form>
       </div>
     </div>

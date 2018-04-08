@@ -28,7 +28,7 @@ def index(request):
         returns['search_term'] = searchTerm
         if searchTerm != "" and searchTerm != None:
 
-                results = Book.objects.filter(book_name__startswith=searchTerm)
+                results = Book.objects.filter(book_name__contains=searchTerm)
 
                 found_results = len(results) != 0
                 returns['found_results'] = found_results
@@ -40,6 +40,7 @@ def index(request):
             if request.POST.get('Title') == "" or request.POST.get('Title') == None or request.POST.get('Author') == "" or request.POST.get('Author') == None or request.POST.get('Quantity') == 0 or request.POST.get('Quantity') == None or request.POST.get('Category') == "" or request.POST.get('Category') == None:
                 metadata = { 'Title': request.POST.get('Title'), 'Author' : request.POST.get('Author'), 'Category' :request.POST.get('Category'), 'Quantity' : request.POST.get('Quantity') }
                 returns['metadata'] = metadata
+                returns['valid_input'] = False
             else:
                 try:
                     book = Book.objects.get(book_name=request.POST.get('Title'))
@@ -146,14 +147,84 @@ def index(request):
                     break
             if request.POST.get(bookKey) == " + ":
                 book = Book.objects.get(pk=bookKey)
-                
                 book.quantity += 1
                 book.save()
+                
+                if searchTerm.isnumeric() and (len(searchTerm) == 10 or len(searchTerm) == 13):
+                    isbn = searchTerm
+                    
+                    if is_isbn10(isbn) or is_isbn13(isbn):
+
+                        try:
+                            metadata = meta(isbn)
+                            print metadata
+                            returns['isbnFound'] = True
+                            clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title') }
+                            results = Book.objects.filter(book_name__contains=clean_metadata['Title'])
+                            found_results = len(results) != 0
+                            returns['found_results'] = found_results
+                            if found_results:
+                                returns['results'] = results
+                            else:
+                                returns['isbn_result'] = clean_metadata
+                        except:
+
+                            returns['found_results'] = False
+                            returns['isbnFound'] = False
+                            
+                    else:
+
+                        
+                        returns['isbnFound'] = False
+                        returns['found_results'] = False
+                else:
+                    results = Book.objects.filter(book_name__contains=searchTerm)
+
+                    found_results = len(results) != 0
+                    returns['found_results'] = found_results
+                    if found_results:
+                        returns['results'] = results
+                
                 
             elif request.POST.get(bookKey) == " - ":
                 book = Book.objects.get(pk=bookKey)
                 book.quantity -= 1
                 book.save()
+                
+                if searchTerm.isnumeric() and (len(searchTerm) == 10 or len(searchTerm) == 13):
+                    isbn = searchTerm
+                    
+                    if is_isbn10(isbn) or is_isbn13(isbn):
+
+                        try:
+                            metadata = meta(isbn)
+                            print metadata
+                            returns['isbnFound'] = True
+                            clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title') }
+                            results = Book.objects.filter(book_name__contains=clean_metadata['Title'])
+                            found_results = len(results) != 0
+                            returns['found_results'] = found_results
+                            if found_results:
+                                returns['results'] = results
+                            else:
+                                returns['isbn_result'] = clean_metadata
+                        except:
+
+                            returns['found_results'] = False
+                            returns['isbnFound'] = False
+                            
+                    else:
+
+                        
+                        returns['isbnFound'] = False
+                        returns['found_results'] = False
+                else:
+                    results = Book.objects.filter(book_name__contains=searchTerm)
+
+                    found_results = len(results) != 0
+                    returns['found_results'] = found_results
+                    if found_results:
+                        returns['results'] = results
                 
             else:
                 book = Book.objects.get(pk=bookKey)
@@ -163,6 +234,8 @@ def index(request):
 
     return render(request, 'inventory/index.html', returns)
 
+
+    
 # def detail(request, book_id):
     # book = get_object_or_404(Book, pk = book_id)
     # if request.method == "POST":
