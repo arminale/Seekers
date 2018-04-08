@@ -7,90 +7,141 @@
     <title>Seekers Books</title>
     <link href="{% static 'inventory/index.css' %}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+    <style>
+    .Header { grid-area: header; height:30px;}
+    .Line {grid-area: line; height: 3px;}
+    .Main { grid-area: main; height:600px;}
+    .Right { grid-area: right; height:600px;}
+    .Footer { grid-area: footer; height:15px; }
+
+    .grid-container {
+      display: grid;
+      grid-template-areas:
+        'header header header header header header'
+        'line line line line line line'
+        'main main main main right right'
+        'footer footer footer footer footer footer';
+      grid-gap: 5px;
+      background-color: white;
+      padding: 5px;
+    }
+    .Header{
+      background-color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 30px;
+    }
+    .Line {
+      background-color: black;
+      postion: fixed;
+    }
+    .Main{
+      background-color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 30px;
+    }
+    .Right{
+      padding-top: 50px;
+      background-color: #white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 30px;
+    }
+    .Footer{
+      background-color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 30px;
+    }
+
+    </style>
 </head>
 
 <body>
-
-
-    <nav class="navbar">
-        <ul>
-            <li><a href="default.asp">Home</a></li>
-            <li><a href="add.asp">Add Bulk</a></li>
-            <li><a href="inventory.asp">Inventory</a></li>
-            <li><a href="analytics.asp">Analytics</a></li>
-            <h1>
-            SEEKERS BOOKS
-            </h1>
-        </ul>
-
-
-    </nav>
-
-    <div class="fsearch">
-        <label class="container">Title
-          <input type="radio" name="select">
-        </label>
-
-        <label class="container">Author
-          <input type="radio" name="select">
-        </label>
-
-        <label class="container">Category
-          <input type="radio" name="select">
-        </label>
+  <div class="grid-container">
+    <div class="Header">
+      <nav class="navbar">
+          <ul>
+              <li><a href="default.asp">Home</a></li>
+              <li><a href="analytics.asp">Analytics</a></li>
+              <li><a href="inventory.asp">Inventory</a></li>
+              <h1>
+              SEEKERS BOOKS
+              </h1>
+          </ul>
+      </nav>
     </div>
 
-    <div class="topnav">
+    <div class="Line">
+    </div>
+
+    <div class="Main">
+      <div class="fsearch">
+          <label class="container">Title
+            <input type="radio" name="select">
+          </label>
+
+          <label class="container">Author
+            <input type="radio" name="select">
+          </label>
+
+          <label class="container">Category
+            <input type="radio" name="select">
+          </label>
+      </div>
+      <br><br>
+      <div class="topnav">
         <img src="http://www.stickpng.com/assets/images/585e4ae9cb11b227491c3394.png" alt="Smiley face" width="20" height="20" >
+        <form action="" method="POST" autocomplete="off">
+              {% csrf_token %}
+              <input type="text" name="search_term" size="50" placeholder="Search for books..." value ="{% if search_term %}{{search_term}}{% endif %}">
+              <input type="submit" name="search" value="Search">
+              {% if found_results %}
+                  <br>
+                  <ul>
+                  {% for book in results %}
+                      <input type="submit" id="booksubmit" name="{{book.pk}}" value = "{{book.book_name}} by {{book.author}}">
+                      <input type="submit" id="minus" name = "{{book.pk}}" value="-">
+                      <input type="submit" id="plus" name="{{book.pk}}" value= "+"><br>
+                  {% endfor %}
+                  </ul>
 
-  <!-- <a class="active" href="#home">Add</a>
-   <a href="#about">About</a>
-   <a href="#contact">Contact</a>  -->
-
-       <form action="" method="POST" autocomplete="off">
-            {% csrf_token %}
-            <input type="text" name="search_term" size="50" placeholder="Search for books..." value ="{% if search_term %}{{search_term}}{% endif %}">
-            <br><br>
-            <input type="submit" name="search" value="search">
-            {% if found_results %}
-                <br>
-                <ul>
-                {% for book in results %}
-                    <input type="submit" name="{{book.pk}}" value = "{{book.book_name}}">
-                    <input type="submit" name="{{book.pk}}" value= "+">
-                    <input type="submit" name = "{{book.pk}}" value="-"<br>
-                {% endfor %}
-                </ul>
-
-            {% endif %}
+              {% endif %}
         </form>
+      </div>
     </div>
 
-   <div class="inputinfo" >
-     <form action="" method= "POST" autocomplete="off">
-      {% csrf_token %}
-         Book Title:<br><br>
-         <input type="text" name="Title" value="{{metadata.Title}}"/> <br><br>
-         Author Name:<br><br>
-         <input type="text" name="Author" value="{{metadata.Author}}"/> <br><br>
-         Current Quantity:<br><br>   <!-- need to fetch value from database -->
-         <input type="number" name="Quantity" value="{{metadata.Quantity}}" size="30" /> <br><br>
-         Category: <br><br>
-         <input type="text" name="Category" list="category" value = "{{metadata.Category}}"size="30"/>
-         <datalist id="category">
-              {% for category in categories %}
-                  <option>{% if category %}{{category}}{%endif%}</option>
-              {% endfor %}
-          </datalist> <br><br>
-          ISBN Barcode: <br><br>
-         <input type="text" name="ISBN" value="{{metadata.ISBN}}" size="30"/> <br><br><br>
-         <input type="submit" name="lookup" value="ISBN Lookup" ><br>
-         {% if isbnFound == False%}ISBN not found.<br>{% endif %}
-         <input type="submit" name="submit" value="Submit" >
-      </form>
-   </div>
-   <p> HELLO THIS IS SUSAN </p>
-   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <div class="Right">
+      <div class="inputinfo" >
+        <form action="" method= "POST" autocomplete="off">
+         {% csrf_token %}
+            Book Title:<br><br>
+            <input type="text" name="Title" value="{{metadata.Title}}"/> <br><br>
+            Author Name:<br><br>
+            <input type="text" name="Author" value="{{metadata.Author}}"/> <br><br>
+            Current Quantity:<br><br>   <!-- need to fetch value from database -->
+            <input type="number" name="Quantity" value="{{metadata.Quantity}}" size="30" /> <br><br>
+            Category: <br><br>
+            <input type="text" name="Category" list="category" value = "{{metadata.Category}}"size="30"/>
+            <datalist id="category">
+                 {% for category in categories %}
+                     <option>{% if category %}{{category}}{%endif%}</option>
+                 {% endfor %}
+             </datalist> <br><br>
+             ISBN Barcode: <br><br>
+            <input type="text" name="ISBN" value="{{metadata.ISBN}}" size="30"/> <br><br><br>
+            <input type="submit" name="lookup" value="ISBN Lookup" size="30"/><br><br>
+            {% if isbnFound == False%}ISBN not found.<br>{% endif %}
+            <input type="submit" name="add_button" value="Submit" size="30"/>
+         </form>
+      </div>
+    </div>
+
+    <div class="Footer">
+    </div>
+  </div>
+
 </body>
 
 </html>
