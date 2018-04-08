@@ -103,7 +103,7 @@
                   <br>
                   <ul id="results">
                   {% for book in results %}
-                      <input type="submit" id="booksubmit" name="{{book.pk}}" value= "{{book.book_name}} by {{book.author}}">
+                      <input type="submit" id="booksubmit" name="{{book.pk}}" value= "{{book.book_name}} by {{book.author}}. Quantity: {{book.quantity}}">
                       <input type="submit" id="minus" name ="{{book.pk}}" value=" - ">
                       <input type="submit" id="plus" name="{{book.pk}}" value= " + "><br>
                   {% endfor %}
@@ -111,9 +111,17 @@
               {% endif %}
               {% if found_results == False%}
                 <br><br>
+                {% if isbnFound == True %}
+                <h3>Searched for "{{isbn_result.Title}}", by "{{isbn_result.Author}}". Book not found in database.</h3>
+                <br>
+                <input type="submit" id="addnew" name="addnew" value="Add New">
+                {% elif isbnFound == False %}
+                <h3>Could not find a book with the entered ISBN</h3>
+                {% else %}
                 <h3>Book not found in database.</h3>
                 <br>
                 <input type="submit" id="addnew" name="addnew" value="Add New">
+                {% endif %}
               {% endif %}
         </form>
       </div>
@@ -136,11 +144,11 @@
                      <option>{% if category %}{{category}}{%endif%}</option>
                  {% endfor %}
              </datalist> <br><br>
-             ISBN Barcode: <br><br>
+<!--             ISBN Barcode: <br><br>
             <input type="text" name="ISBN" value="{{metadata.ISBN}}" size="30"/> <br><br><br>
             <input type="submit" name="lookup" value="ISBN Lookup" size="30"/><br>
-            {% if isbnFound == False%}<br>ISBN not found.<br><br>{% endif %}
-            <input type="submit" name="add_button" value="Submit" size="30"/>
+            {% if isbnFound == False%}<br>ISBN not found.<br><br>{% endif %} -->
+           <input type="submit" name="add_button" value="Submit" size="30"/>
          </form>
       </div>
     </div>

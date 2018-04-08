@@ -55,42 +55,89 @@ def index(request):
                 book.save()
 
 
-        elif request.POST.get('lookup') != None:
-            isbn = request.POST.get('ISBN')
+        # elif request.POST.get('lookup') != None:
+            # isbn = request.POST.get('ISBN')
 
-            if is_isbn10(isbn) or is_isbn13(isbn):
+            # if is_isbn10(isbn) or is_isbn13(isbn):
 
-                try:
-                    metadata = meta(isbn)
-                    clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
-                    returns['isbnFound'] = True
-                    returns['metadata'] =  clean_metadata
+                # try:
+                    # metadata = meta(isbn)
+                    # clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title'), 'ISBN' : isbn }
+                    # returns['isbnFound'] = True
+                    # returns['metadata'] =  clean_metadata
 
-                except:
+                # except:
 
-                    clean_metadata = { 'ISBN' : isbn }
-                    returns['isbnFound'] = False
-                    returns['metadata'] =  clean_metadata
-            else:
+                    # clean_metadata = { 'ISBN' : isbn }
+                    # returns['isbnFound'] = False
+                    # returns['metadata'] =  clean_metadata
+            # else:
 
-                clean_metadata = { 'ISBN' : isbn }
-                returns['isbnFound'] = False
-                returns['metadata'] =  clean_metadata
+                # clean_metadata = { 'ISBN' : isbn }
+                # returns['isbnFound'] = False
+                # returns['metadata'] =  clean_metadata
         elif request.POST.get('search') != None:
             searchTerm = request.POST.get('search_term')
 
             returns['search_term'] = searchTerm
+            
             if searchTerm != "":
+                if searchTerm.isnumeric() and (len(searchTerm) == 10 or len(searchTerm) == 13):
+                    isbn = searchTerm
+                    
+                    if is_isbn10(isbn) or is_isbn13(isbn):
 
-                results = Book.objects.filter(book_name__contains=searchTerm)
+                        try:
+                            metadata = meta(isbn)
+                            print metadata
+                            returns['isbnFound'] = True
+                            clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title') }
+                            results = Book.objects.filter(book_name__contains=clean_metadata['Title'])
+                            found_results = len(results) != 0
+                            returns['found_results'] = found_results
+                            if found_results:
+                                returns['results'] = results
+                            else:
+                                returns['isbn_result'] = clean_metadata
+                        except:
 
-                found_results = len(results) != 0
-                returns['found_results'] = found_results
-                if found_results:
-                    returns['results'] = results
+                            returns['found_results'] = False
+                            returns['isbnFound'] = False
+                            
+                    else:
+
+                        
+                        returns['isbnFound'] = False
+                        returns['found_results'] = False
+                else:
+                    results = Book.objects.filter(book_name__contains=searchTerm)
+
+                    found_results = len(results) != 0
+                    returns['found_results'] = found_results
+                    if found_results:
+                        returns['results'] = results
+                        
+                        
         elif request.POST.get('addnew') != None:
-            metadata = {'Title' : searchTerm}
-            returns['metadata'] = metadata
+            
+            if searchTerm.isnumeric() and (len(searchTerm) == 10 or len(searchTerm) == 13):
+                isbn = searchTerm
+                if is_isbn10(isbn) or is_isbn13(isbn):
+                    
+                    metadata = meta(isbn)
+                    
+                    clean_metadata = {'Author': metadata.get('Authors')[0], 'Title': metadata.get('Title') }
+                    returns['metadata'] =  clean_metadata
+                    returns['found_results'] = False
+                    returns['isbnFound'] = True
+                    returns['isbn_result'] = clean_metadata
+                else:
+                    metadata = {'Title' : searchTerm}
+                    returns['metadata'] = metadata
+                    
+            else:
+                metadata = {'Title' : searchTerm}
+                returns['metadata'] = metadata
         
         else:
             for key in request.POST.keys():
@@ -99,17 +146,15 @@ def index(request):
                     break
             if request.POST.get(bookKey) == " + ":
                 book = Book.objects.get(pk=bookKey)
-                book = Book.objects.get(pk=bookKey)
+                
                 book.quantity += 1
                 book.save()
-                returns['results'] = None
-                returns['search_term'] = ""
+                
             elif request.POST.get(bookKey) == " - ":
                 book = Book.objects.get(pk=bookKey)
                 book.quantity -= 1
                 book.save()
-                returns['results'] = None
-                returns['search_term'] = ""
+                
             else:
                 book = Book.objects.get(pk=bookKey)
 
