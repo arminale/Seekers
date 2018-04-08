@@ -99,14 +99,19 @@
               <input type="submit" name="search" value="Search">
               {% if found_results %}
                   <br>
-                  <ul>
+                  <ul id="results">
                   {% for book in results %}
-                      <input type="submit" id="booksubmit" name="{{book.pk}}" value = "{{book.book_name}} by {{book.author}}">
-                      <input type="submit" id="minus" name = "{{book.pk}}" value="-">
-                      <input type="submit" id="plus" name="{{book.pk}}" value= "+"><br>
+                      <input type="submit" id="booksubmit" name="{{book.pk}}" value= "{{book.book_name}} by {{book.author}}">
+                      <input type="submit" id="minus" name ="{{book.pk}}" value=" - ">
+                      <input type="submit" id="plus" name="{{book.pk}}" value= " + "><br>
                   {% endfor %}
                   </ul>
-
+              {% endif %}
+              {% if found_results == False%}
+                <br><br>
+                <h3>Book not found in database.</h3>
+                <br>
+                <input type="submit" id="addnew" value="Add New">
               {% endif %}
         </form>
       </div>
@@ -131,8 +136,8 @@
              </datalist> <br><br>
              ISBN Barcode: <br><br>
             <input type="text" name="ISBN" value="{{metadata.ISBN}}" size="30"/> <br><br><br>
-            <input type="submit" name="lookup" value="ISBN Lookup" size="30"/><br><br>
-            {% if isbnFound == False%}ISBN not found.<br>{% endif %}
+            <input type="submit" name="lookup" value="ISBN Lookup" size="30"/><br>
+            {% if isbnFound == False%}<br>ISBN not found.<br><br>{% endif %}
             <input type="submit" name="add_button" value="Submit" size="30"/>
          </form>
       </div>

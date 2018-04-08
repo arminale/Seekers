@@ -195,10 +195,68 @@ select option {
   color: black;
   text-align: center;
   text-decoration: none;
-  width: 500px;
+  width: 680px;
   height: 50px;
   text-align: left;
   padding-left: 50px;
+  position: relative;
+  right:50px;
+}
+
+#minus {
+  font-family: "Open Sans";
+  font-size: 18px;
+  background-color: #FFFFFF;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  right: 60px;
+}
+
+#plus {
+  font-family: "Open Sans";
+  font-size: 18px;
+  background-color: #FFFFFF;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  right: 70px;
+}
+
+#booksubmit:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#minus:hover {
+    background-color: #D3D3D3;
+    cursor: pointer;
+}
+#plus:hover {
+    background-color: #D3D3D3;
+    cursor: pointer;
+}
+
+#addnew {
+  font-family: "Open Sans";
+  font-size: 18px;
+  background-color: #FFFFFF;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  width: 100px;
+  height: 50px;
+}
+
+#addnew:hover {
+    background-color: #D3D3D3;
+    cursor: pointer;
 }
 
 .fsearch{
