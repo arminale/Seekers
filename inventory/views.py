@@ -82,7 +82,7 @@ def index(request):
             returns['search_term'] = searchTerm
             if searchTerm != "":
 
-                results = Book.objects.filter(book_name__startswith=searchTerm)
+                results = Book.objects.filter(book_name__contains=searchTerm)
 
                 found_results = len(results) != 0
                 returns['found_results'] = found_results
@@ -97,14 +97,14 @@ def index(request):
                 if key.isnumeric():
                     bookKey = key
                     break
-            if request.POST.get(bookKey) == "+":
+            if request.POST.get(bookKey) == " + ":
                 book = Book.objects.get(pk=bookKey)
                 book = Book.objects.get(pk=bookKey)
                 book.quantity += 1
                 book.save()
                 returns['results'] = None
                 returns['search_term'] = ""
-            elif request.POST.get(bookKey) == "-":
+            elif request.POST.get(bookKey) == " - ":
                 book = Book.objects.get(pk=bookKey)
                 book.quantity -= 1
                 book.save()
