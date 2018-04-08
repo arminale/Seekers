@@ -11,7 +11,7 @@ class Book(models.Model):
     date_added = models.DateTimeField()
     quantity = models.IntegerField(default = 0)
     category = models.CharField(max_length = 200)
-    isbn = models.IntegerField(default = 0)
+    
     
     def __str__(self):
         return self.book_name
