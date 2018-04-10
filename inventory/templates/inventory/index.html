@@ -95,9 +95,9 @@
       <br><br>
       <div class="topnav">
         <img src="http://www.stickpng.com/assets/images/585e4ae9cb11b227491c3394.png" alt="Smiley face" width="20" height="20" >
-        <form action="" method="POST" autocomplete="off">
+        <form action="" method="POST" autocomplete="off" id="search">
               {% csrf_token %}
-              <input type="text" name="search_term" size="50" placeholder="Search for books..." value ="{% if search_term %}{{search_term}}{% endif %}">
+              <input type="text" id="search_term" name="search_term" size="50" placeholder="Search for books..." value ="{% if search_term %}{{search_term}}{% endif %}">
               <input type="submit" name="search" value="Search">
               {% if found_results %}
                   <br>
@@ -109,21 +109,29 @@
                   {% endfor %}
                   </ul>
               {% endif %}
+                <script type="text/javascript">document.getElementById("search_term").focus();</script>
+
               {% if found_results == False%}
                 <br><br>
                 {% if isbnFound == True %}
                 <h3>Searched for "{{isbn_result.Title}}", by "{{isbn_result.Author}}". Book not found in database.</h3>
                 <br>
                 <input type="submit" id="addnew" name="addnew" value="Add New">
+                <script type="text/javascript">document.getElementById("addnew").focus();</script>
+
                 {% elif isbnFound == False %}
                 <h3>Could not find a book with the entered ISBN</h3>
                 {% else %}
                 <h3>Book not found in database.</h3>
                 <br>
                 <input type="submit" id="addnew" name="addnew" value="Add New">
+                <script type="text/javascript">document.getElementById("addnew").focus();</script>
+
                 {% endif %}
               {% endif %}
         </form>
+         
+        
       </div>
     </div>
 
@@ -132,22 +140,34 @@
         <form action="" method= "POST" autocomplete="off">
          {% csrf_token %}
             Book Title:<br><br>
-            <input type="text" name="Title" value="{{metadata.Title}}"/> <br><br>
+            <input type="text" name="Title" id="Title" value="{{metadata.Title}}"/> <br><br>
             Author Name:<br><br>
-            <input type="text" name="Author" value="{{metadata.Author}}"/> <br><br>
+            <input type="text" name="Author" id="Author" value="{{metadata.Author}}"/> <br><br>
             Current Quantity:<br><br>   <!-- need to fetch value from database -->
-            <input type="number" name="Quantity" value="{% if metadata.Quantity %}{{metadata.Quantity}}{% else %}0{% endif %}" size="30" /> <br><br>
+            <input type="number" name="Quantity" id="Quantity" value="{% if metadata.Quantity %}{{metadata.Quantity}}{% elif metadata%}1{% else %}0{% endif %}" size="30" /> <br><br>
+            {% if metadata.Author %}
+            <script type="text/javascript">document.getElementById("Quantity").focus();</script>
+            {% elif metadata %}
+            <script type="text/javascript">document.getElementById("Title").focus();</script>
+            {% endif %}
             Category: <br><br>
             <input type="text" name="Category" list="category" value = "{{metadata.Category}}"size="30"/>
             <datalist id="category">
-                 {% for category in categories %}
-                     <option>{% if category %}{{category}}{%endif%}</option>
-                 {% endfor %}
+                    <option>Literature</option>
+                    <option>Mystery</option>
+                    <option>New Age</option>
+                    <option>Philosophy</option>
+                    <option>Religion</option>
+                    <option>Self Help</option>
+                    <option>Yoga and Meditation</option>
+                 
              </datalist> <br><br>
 <!--             ISBN Barcode: <br><br>
             <input type="text" name="ISBN" value="{{metadata.ISBN}}" size="30"/> <br><br><br>
             <input type="submit" name="lookup" value="ISBN Lookup" size="30"/><br>
             {% if isbnFound == False%}<br>ISBN not found.<br><br>{% endif %} -->
+            <br>
+            <br>
            <input type="submit" name="add_button" value="Submit" size="30"/>
            {% if valid_input == False %}
                 <h3 style="color:red; font-weight:bold">Please fill out all fields with valid<br>values.</h3>
